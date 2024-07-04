@@ -4,7 +4,7 @@
 
 .spotify_now-playing {
     grid-template-columns: auto 20vw;
-    grid-template-rows:
+    grid-template-areas:
         "song art"
         "artists art";
 }

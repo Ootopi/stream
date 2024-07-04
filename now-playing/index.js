@@ -83,8 +83,8 @@ function update_track(track_name = '', artists = [], album_art_url = '', is_play
         spotify_artists_content.textContent = artists
         spotify_song_content.textContent = track_name
 
-        update_scroll(spotify_artists, spotify_artists_content, 'artists')
-        update_scroll(spotify_song, spotify_song_content, 'song')
+        update_scroll(spotify_artists, spotify_artists_content_wrapper, spotify_artists_content, 'artists')
+        update_scroll(spotify_song, spotify_song_content_wrapper, spotify_song_content,'song')
         
         spotify_now_playing.classList.toggle('art', album_art_url.length > 0)
     }

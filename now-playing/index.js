@@ -58,7 +58,8 @@ function currently_playing_track() {
             // retry_after = response.headers['Retry-After']
             if(!retry_after) retry_after = 10
             console.log(`Retrying after ${retry_after}`)
-            throw new Error('Too many requests')
+            return
+            // throw new Error('Too many requests')
         }
         throw new Error('Invalid response status')
     }).catch(() => {

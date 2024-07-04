@@ -42,16 +42,12 @@ function get_dominant_color(image) {
 let retry_after = 0
 
 function currently_playing_track() {
-    return oauth.request_access_token().then(token => 
-        fetch('https://api.spotify.com/v1/me/player/currently-playing',{ 
+    return oauth.request_access_token().then(token => {
+        if(!token) throw new Error('Invalid access token')
+        return fetch('https://api.spotify.com/v1/me/player/currently-playing',{ 
             headers: {'Authorization': `Bearer ${token}`}
-        }).then(response => {
-            for (const pair of response.headers.entries()) {
-                console.log(pair[0]+ ': '+ pair[1]);
-            }
-            return response
         })
-    ).then(response => {
+    }).then(response => {
         retry_after = 0
         for (const pair of response.headers.entries()) {
             console.log(pair[0]+ ': '+ pair[1]);

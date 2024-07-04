@@ -39,6 +39,8 @@ function get_dominant_color(image) {
     return `rgba(${i.join(',')})`
 }
 
+let retry_after = 0
+
 function currently_playing_track() {
     return oauth.request_access_token().then(token => 
         fetch('https://api.spotify.com/v1/me/player/currently-playing',{ 
@@ -47,6 +49,13 @@ function currently_playing_track() {
     ).then(response => {
         if(response.status == 200) return response.json()
         if(response.status == 204) return
+        if(response.status == 429) {
+            retry_after = response.headers.get('retry-after')
+            console.log(`Retrying after ${retry_after}`)
+            throw new Error('Too many requests')
+        }
+        throw new Error('Invalid response status')
+    }).catch(() => {
         oauth.invalidate_access_token()
     })
 }
@@ -98,17 +107,21 @@ function update_track(track_name = '', artists = [], album_art_url = '', is_play
     spotify_now_playing.classList.toggle('in', !out)
 }
 
-function update() {
-    if(transition_out) {
-        transition_out = false
-        return
+let last_frame_time 
+function update(time) {
+    if(last_frame_time === undefined) last_frame_time = time
+    const delta_time = time - last_frame_time
+    retry_after -= delta_time
+    if(retry_after > 0) {
+        console.log(`Retrying after ${retry_after}`)
+        return requestAnimationFrame(update)
     }
-    
+
     currently_playing_track().then(json => {
         if(!json) return update_track()
         if(json.currently_playing_type == 'track') return update_track(json.item.name, json.item.artists, json.item.album.images?.find(x => true).url, json.is_playing)
         return update_track()
-    })
+    }).then(() => requestAnimationFrame(update))
 }
 
-setInterval(update, 500)
+requestAnimationFrame(update)

@@ -114,6 +114,7 @@ function update(time) {
     if(last_frame_time === undefined) last_frame_time = time
     const delta_time = time - last_frame_time
     retry_after -= delta_time / 1000
+    last_frame_time = time
     if(retry_after > 0) {
         console.log(`Retrying after ${retry_after}`)
         return requestAnimationFrame(update)

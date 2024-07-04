@@ -1,6 +1,6 @@
 import OAuth from '../common/OAuth/OAuth.js'
 
-const SPOTIFY_CLIENT_ID = '05985642776142019b153167794fec64'
+const SPOTIFY_CLIENT_ID = '4860e863d5e948fd8cacee93d926cece'
 const SPOTIFY_REDIRECT_URI = 'https://ootopi.github.io/stream/now-playing'
 const SPOTIFY_TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token'
 const SPOTIFY_AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'

@@ -28,7 +28,7 @@ const oauth = new OAuth('spotify', {
 
 oauth.invalidate_access_token()
 
-const dominant_color_canvas_context = document.createElement('canvas').getContext('2d')
+const dominant_color_canvas_context = document.createElement('canvas').getContext('2d', { willReadFrequently: true })
 
 function get_dominant_color(image) {
     dominant_color_canvas_context.drawImage(image, 0, 0, 1, 1)

@@ -51,7 +51,7 @@ function currently_playing_track() {
         if(response.status == 204) return
         if(response.status == 429) {
             retry_after = response.headers.get('retry-after')
-            if(!retry_after) retry_after = 10000
+            if(!retry_after) retry_after = 10
             console.log(`Retrying after ${retry_after}`)
             throw new Error('Too many requests')
         }
@@ -112,7 +112,7 @@ let last_frame_time
 function update(time) {
     if(last_frame_time === undefined) last_frame_time = time
     const delta_time = time - last_frame_time
-    retry_after -= delta_time
+    retry_after -= delta_time / 1000
     if(retry_after > 0) {
         console.log(`Retrying after ${retry_after}`)
         return requestAnimationFrame(update)

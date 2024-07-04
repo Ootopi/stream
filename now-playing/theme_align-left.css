@@ -10,5 +10,5 @@
 }
 
 .spotify_now-playing.in .spotify_play-indicator {
-    left: -50%;
+    left: 50%;
 }

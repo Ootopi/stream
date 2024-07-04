@@ -14,8 +14,8 @@ const song_color = search_params.get('song-color')
 if(song_color) customizations.push(`--song-color: ${song_color}`)
 const shadow_color = search_params.get('shadow-color')
 if(shadow_color) customizations.push(`--shadow-color: ${shadow_color}`)
-const artist_color = search_params.get('artist-color')
-if(artist_color) customizations.push(`--artist-color: ${artist_color}`)
+const artists_color = search_params.get('artist-color')
+if(artists_color) customizations.push(`--artist-color: ${artists_color}`)
 document.querySelector('.spotify_now-playing').style = customizations.join(';')
 
 const oauth = new OAuth('spotify', {
@@ -53,43 +53,46 @@ document.querySelector('.spotify_art img').addEventListener('load', () => {
     document.querySelector('.spotify_now-playing .vinyl').style = `--color: ${get_dominant_color(document.querySelector('.spotify_art img'))}`
 })
 
+const spotify_artists_content = document.querySelector('.spotify_artists > .content_wrapper > .content')
+const spotify_artists_content_wrapper = document.querySelector('.spotify_artists > .content_wrapper')
+const spotify_song = document.querySelector('.spotify_song')
+const spotify_song_content = document.querySelector('.spotify_song > .content_wrapper > .content')
+const spotify_song_content_wrapper = document.querySelector('.spotify_song > .content_wrapper')
+const spotify_now_playing = document.querySelector('.spotify_now-playing')
+const spotify_artists = document.querySelector('.spotify_now-playing')
+const spotify_art_img = document.querySelector('.spotify_art img')
+
+function update_scroll(toggle_element, outer, inner, prefix) {
+    const outer_width = parseFloat(getComputedStyle(outer).width)
+    const inner_width = inner.getBoundingClientRect().width
+    toggle_element.classList.toggle('scroll', inner_width >= outer_width)
+
+    const scroll_duration = (inner_width - outer_width) / 50
+    const style = `--${prefix}_scroll_duration: ${scroll_duration}s`
+    outer.style = style
+    inner.style = style
+}
+
 function update_track(track_name = '', artists = [], album_art_url = '', is_playing = false) {
     artists = artists.map(artist => artist.name).join(', ')
 
-    const spotify_artists_content = document.querySelector('.spotify_artists > .content_wrapper > .content')
-    const spotify_song_content = document.querySelector('.spotify_song > .content_wrapper >  .content')
-
-    const same_song = document.querySelector('.spotify_art img').src == album_art_url && spotify_artists_content.textContent == artists && spotify_song_content.textContent == track_name
+    const same_song = spotify_art_img.src == album_art_url && spotify_artists_content.textContent == artists && spotify_song_content.textContent == track_name
 
     if(!same_song) {
-        document.querySelector('.spotify_art img').src = album_art_url
+        spotify_art_img.src = album_art_url
         spotify_artists_content.textContent = artists
         spotify_song_content.textContent = track_name
-        
-        const artist_wrapper_width = parseFloat(getComputedStyle(document.querySelector('.spotify_artists')).width)
-        const artist_content_width = spotify_artists_content.getBoundingClientRect().width
-        const artist_scroll = artist_content_width >= artist_wrapper_width
-        document.querySelector('.spotify_artists').classList.toggle('scroll', artist_scroll)
-    
-        const artist_scroll_speed = (artist_content_width - artist_wrapper_width) / 50
-        document.querySelector('.spotify_artists .content').style = `--artist_scroll_duration: ${artist_scroll_speed}s`
-        document.querySelector('.spotify_artists .content_wrapper').style = `--artist_scroll_duration: ${artist_scroll_speed}s`
-        
-        const song_wrapper = parseFloat(getComputedStyle(document.querySelector('.spotify_song')).width)
-        const song_content = document.querySelector('.spotify_song > .content_wrapper > .content').getBoundingClientRect().width
 
-        const song_scroll_speed = (song_content - song_wrapper) / 50
-        document.querySelector('.spotify_song .content').style = `--song_scroll_duration: ${song_scroll_speed}s`
-        document.querySelector('.spotify_song .content_wrapper').style = `--song_scroll_duration: ${song_scroll_speed}s`
-        const song_scroll = song_content >= song_wrapper
-        document.querySelector('.spotify_song').classList.toggle('scroll', song_scroll)
-        document.querySelector('.spotify_now-playing').classList.toggle('art', album_art_url.length > 0)
+        update_scroll(spotify_artists, spotify_artists_content, 'artists')
+        update_scroll(spotify_song, spotify_song_content, 'song')
+        
+        spotify_now_playing.classList.toggle('art', album_art_url.length > 0)
     }
     
     const out = !same_song || !is_playing
     if(!same_song) { transition_out = true }
-    document.querySelector('.spotify_now-playing').classList.toggle('playing', is_playing)
-    document.querySelector('.spotify_now-playing').classList.toggle('in', !out)
+    spotify_now_playing.classList.toggle('playing', is_playing)
+    spotify_now_playing.classList.toggle('in', !out)
 }
 
 function update() {

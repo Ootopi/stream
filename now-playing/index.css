@@ -1,5 +1,5 @@
 :root {
-    --artist-color: #DDD;
+    --artists-color: #DDD;
     --shadow-color: black;
     --song-color: white;
 }
@@ -120,7 +120,7 @@ body {
 
 .spotify_artists.scroll > .content_wrapper {
     display: inline-block;
-    animation: marquee_wrapper var(--artist_scroll_duration) ease-in-out infinite alternate;
+    animation: marquee_wrapper var(--artists_scroll_duration) ease-in-out infinite alternate;
 }
 
 .spotify_song.scroll > .content_wrapper > .content {
@@ -133,16 +133,16 @@ body {
 }
 
 .spotify_artists.scroll > .content_wrapper > .content {
-    animation: marquee var(--artist_scroll_duration) ease-in-out infinite alternate;
+    animation: marquee var(--artists_scroll_duration) ease-in-out infinite alternate;
 }
 
 .spotify_artists {
     font-size: 4vw;
     grid-area: artists;
-    /* background: var(--artist-color);
+    /* background: var(--artists-color);
     background-clip: text;
     color: transparent; */
-    color: var(--artist-color);
+    color: var(--artists-color);
 }
 
 @keyframes marquee_wrapper {

@@ -45,14 +45,20 @@ function currently_playing_track() {
     return oauth.request_access_token().then(token => 
         fetch('https://api.spotify.com/v1/me/player/currently-playing',{ 
             headers: {'Authorization': `Bearer ${token}`}
-        })
-    ).then(response => {
-        if(response.status == 200) return response.json()
-        if(response.status == 204) return
-        if(response.status == 429) {
+        }).then(response => {
             for (const pair of response.headers.entries()) {
                 console.log(pair[0]+ ': '+ pair[1]);
             }
+            return response
+        })
+    ).then(response => {
+        retry_after = 0
+        for (const pair of response.headers.entries()) {
+            console.log(pair[0]+ ': '+ pair[1]);
+        }
+        if(response.status == 200) return response.json()
+        if(response.status == 204) return
+        if(response.status == 429) {
             // retry_after = response.headers['Retry-After']
             if(!retry_after) retry_after = 10
             console.log(`Retrying after ${retry_after}`)

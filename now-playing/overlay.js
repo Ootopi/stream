@@ -1,7 +1,8 @@
 import OAuth from '../common/OAuth/OAuth.js'
 
 const SPOTIFY_CLIENT_ID = '4860e863d5e948fd8cacee93d926cece'
-const SPOTIFY_REDIRECT_URI = 'https://ootopi.github.io/stream/now-playing/overlay.htm'
+const DOMAIN = location.origin
+const SPOTIFY_REDIRECT_URI = `${DOMAIN}/stream/now-playing/overlay.htm`
 const SPOTIFY_TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token'
 const SPOTIFY_AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
 

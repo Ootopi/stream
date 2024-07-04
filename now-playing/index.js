@@ -100,13 +100,12 @@ function update() {
         transition_out = false
         return
     }
-    try {
+    
     currently_playing_track().then(json => {
         if(!json) return update_track()
         if(json.currently_playing_type == 'ad') return update_track()
         if(json.currently_playing_type == 'track') return update_track(json.item.name, json.item.artists, json.item.album.images?.find(x => true).url, json.is_playing)
     })
-    } catch(e){}
 }
 
 setInterval(update, 500)

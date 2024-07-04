@@ -1,0 +1,174 @@
+:root {
+    --artist-color: #DDD;
+    --shadow-color: black;
+    --song-color: white;
+}
+
+html, body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+body {
+    font-size: 30px;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 3%;
+}
+
+.spotify_now-playing {
+    display: grid;
+    grid-template-columns: 20vw auto;
+    grid-template-areas:
+        "art song"
+        "art artists";
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--song-color);
+
+}
+
+.spotify_art {
+    position: relative;
+    grid-area: art;
+}
+
+.spotify_art img {
+    display: none;
+    border-radius: 5%;
+    filter: drop-shadow(2px 2px 5px black);
+    z-index: 2;
+    height: 20vw;
+    width: 20vw;
+}
+
+.spotify_now-playing.art .spotify_art img {
+    display: block;
+}
+
+.spotify_song, .spotify_artists {
+    
+    padding: 0 5vw;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    filter: 
+        drop-shadow(1px 0px 0px var(--shadow-color))
+        drop-shadow(-1px 0px 0px var(--shadow-color))
+        drop-shadow(0px 1px 0px var(--shadow-color))
+        drop-shadow(0px -1px 0px var(--shadow-color))
+        drop-shadow(2px 2px 5px var(--shadow-color));
+    mask-image: linear-gradient(90deg, rgba(0,0,0,0) 3%, rgba(0,0,0,1) 7%, rgba(0,0,0,1) 93%, rgba(0,0,0,0) 97%);;
+}
+
+.spotify_song {
+    align-self: baseline;
+    margin-top: auto;
+    padding-bottom: 1vw;
+    grid-area: song;
+    font-weight: bold;
+    font-size: 5vw;
+    overflow: hidden;
+    
+    /* background: var(--song-color);
+    background-clip: text;
+    color: transparent; */
+}
+
+.spotify_play-indicator {
+    display: block;
+    position: relative;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    align-self: center;
+    grid-area: art;
+    transition: all 250ms ease-in;
+    left: 0%;
+    padding: 1vw;
+}
+
+.spotify_now-playing.art .vinyl {
+    position: relative;
+    border-radius: 50%;
+    animation: spin 5s linear infinite;
+    animation-play-state: paused;
+    display: block;
+    background:
+        radial-gradient(transparent 0%, transparent 5%, var(--color) 5%, var(--color) 20%, #ADA9A0 1px, var(--color) 22%, var(--color) 30%, transparent 20%, transparent),
+        linear-gradient(30deg, transparent 40%, rgba(42, 41, 40, .85) 40%) no-repeat 100% 0,
+        linear-gradient(60deg, rgb(40, 40, 40, 0.85) 60%, transparent 60%) no-repeat 0 100%,
+        repeating-radial-gradient(circle at center, #2A2929 0px,#2A2929 5px, #ADA9A0 6px, #2A2929 5px);
+    background-size: 100% 100%, 50% 100%, 100% 50%, 100% 100%;
+    filter: drop-shadow(2px 2px 5px black);
+    width: 18vw;
+    height: 18vw;
+}
+
+.spotify_now-playing.in .spotify_play-indicator {
+    left: 50%;
+}
+
+.spotify_now-playing.playing .vinyl {
+    animation-play-state: running;
+}
+
+.spotify_artists.scroll > .content_wrapper {
+    display: inline-block;
+    animation: marquee_wrapper var(--artist_scroll_duration) ease-in-out infinite alternate;
+}
+
+.spotify_song.scroll > .content_wrapper > .content {
+    animation: marquee var(--song_scroll_duration) ease-in-out infinite alternate;
+}
+
+.spotify_song.scroll > .content_wrapper {
+    display: inline-block;
+    animation: marquee_wrapper var(--song_scroll_duration) ease-in-out infinite alternate;
+}
+
+.spotify_artists.scroll > .content_wrapper > .content {
+    animation: marquee var(--artist_scroll_duration) ease-in-out infinite alternate;
+}
+
+.spotify_artists {
+    font-size: 4vw;
+    grid-area: artists;
+    /* background: var(--artist-color);
+    background-clip: text;
+    color: transparent; */
+    color: var(--artist-color);
+}
+
+@keyframes marquee_wrapper {
+    0% { margin-left: 0; }
+    10% { margin-left: 0; }
+    90% { margin-left: 100%; }
+    100% { margin-left: 100%; }
+}
+
+@keyframes marquee {
+    0% { margin-left: 0; }
+    10% { margin-left: 0; }
+    90% { margin-left: -100%; }
+    100% { margin-left: -100%; }
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+@keyframes slide_in {
+	0% { left: 0% }
+	100% { left: 50% }
+}
+@keyframes slide_out {
+	/* 0% { left: 50% } */
+	100% { left: 0% }
+}

@@ -51,7 +51,7 @@ function currently_playing_track() {
         if(response.status == 204) return
         if(response.status == 429) {
             console.log(response.headers)
-            retry_after = response.headers.get('retry-after')
+            retry_after = response.headers.get('Retry-After')
             if(!retry_after) retry_after = 10
             console.log(`Retrying after ${retry_after}`)
             throw new Error('Too many requests')

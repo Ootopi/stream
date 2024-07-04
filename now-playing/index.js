@@ -113,14 +113,9 @@ let last_frame_time
 function update(time) {
     if(last_frame_time === undefined) last_frame_time = time
     const delta_time = (time - last_frame_time)
-    console.log(delta_time)
     retry_after -= delta_time / 1000
     last_frame_time = time
-    if(retry_after > 0) {
-        console.log(`Retrying after ${retry_after}`)
-        return requestAnimationFrame(update)
-    }
-
+    if(retry_after > 0) return requestAnimationFrame(update)
     currently_playing_track().then(json => {
         if(!json) return update_track()
         if(json.currently_playing_type == 'track') return update_track(json.item.name, json.item.artists, json.item.album.images?.find(x => true).url, json.is_playing)

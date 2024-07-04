@@ -21,13 +21,8 @@ body {
 
 .spotify_now-playing {
     display: grid;
-    grid-template-columns: 20vw auto;
-    grid-template-areas:
-        "art song"
-        "art artists";
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--song-color);
-
 }
 
 .spotify_art {
@@ -108,10 +103,6 @@ body {
     filter: drop-shadow(2px 2px 5px black);
     width: 18vw;
     height: 18vw;
-}
-
-.spotify_now-playing.in .spotify_play-indicator {
-    left: 50%;
 }
 
 .spotify_now-playing.playing .vinyl {

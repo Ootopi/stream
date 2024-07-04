@@ -1,0 +1,14 @@
+.spotify-song, .spotify-artist {
+    text-align: right;
+}
+
+.spotify_now-playing {
+    grid-template-columns: auto 20vw;
+    grid-template-rows:
+        "song art"
+        "artists art";
+}
+
+.spotify_now-playing.in .spotify_play-indicator {
+    left: -50%;
+}

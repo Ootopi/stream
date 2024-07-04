@@ -9,6 +9,9 @@ const search_params = new URLSearchParams(location.search)
 const reset = search_params.get('reset')
 if(reset) localStorage.clear()
 
+const align = search_params.get('align')
+if(align) document.querySelector('theme_align').setAttribute('href', `theme_align-${align}.css`)
+
 const customizations = []
 const song_color = search_params.get('song-color')
 if(song_color) customizations.push(`--song-color: ${song_color}`)

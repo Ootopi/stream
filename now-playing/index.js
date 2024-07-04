@@ -39,7 +39,10 @@ function get_dominant_color(image) {
     return `rgba(${i.join(',')})`
 }
 
-let retry_after = 0
+let update_rate = 1
+let retry_after = update_rate
+let retry_backoff = 10
+let retry_count = 0
 
 function currently_playing_track() {
     return oauth.request_access_token().then(token => {
@@ -48,18 +51,19 @@ function currently_playing_track() {
             headers: {'Authorization': `Bearer ${token}`}
         })
     }).then(response => {
-        retry_after = 0
-        for (const pair of response.headers.entries()) {
-            console.log(pair[0]+ ': '+ pair[1]);
+        retry_after = update_rate
+        if(response.status == 200) {
+            retry_count = 0
+            return response.json()
         }
-        if(response.status == 200) return response.json()
-        if(response.status == 204) return
-        if(response.status == 429) {
-            // retry_after = response.headers['Retry-After']
-            if(!retry_after) retry_after = 10
-            console.log(`Retrying after ${retry_after}`)
+        if(response.status == 204) {
+            retry_count = 0
             return
-            // throw new Error('Too many requests')
+        }
+        if(response.status == 429) {
+            retry_count ++
+            retry_after = retry_backoff * retry_count
+            return
         }
         throw new Error('Invalid response status')
     }).catch(() => {

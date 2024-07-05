@@ -27,7 +27,7 @@ const oauth = new OAuth('spotify', {
     redirect_uri: SPOTIFY_REDIRECT_URI,
     authorization_endpoint: SPOTIFY_AUTH_ENDPOINT,
     token_endpoint: SPOTIFY_TOKEN_ENDPOINT,
-    requested_scopes: 'user-read-playback-state user-read-currently-playing'
+    requested_scopes: 'user-read-currently-playing'
 })
 
 oauth.invalidate_access_token()

@@ -32,13 +32,14 @@ export default function(id, config) {
         CODE_VERIFIER: `${id}_code-verifier`,
     }
 
-    function update_tokens({access_token, refresh_token}) {
+    function update_tokens(json) {
         return new Promise((resolve, reject) => {
-            if(!access_token || !refresh_token) return reject()
+            if(!json.access_token || !json.refresh_token) return reject()
+            access_token = json.access_token
             config.storage.removeItem(STORAGE_KEYS.STATE)
             config.storage.removeItem(STORAGE_KEYS.CODE_VERIFIER)
-            config.storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refresh_token)
-            resolve({access_token, refresh_token})
+            config.storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, json.refresh_token)
+            resolve({access_token, refresh_token: json.refresh_token})
         })
     }
 

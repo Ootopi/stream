@@ -99,7 +99,6 @@ export default function(id, config) {
     function remove_search_params() { location.replace(`${location.origin}${location.pathname}`) }
 
     async function request_access_token() {
-        invalidate_access_token()
         if(!access_token) await request_tokens_refresh()
         if(!access_token) await request_tokens()
         return new Promise((resolve, reject) => access_token ? resolve(access_token) : reject())

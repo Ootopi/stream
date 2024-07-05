@@ -21,82 +21,86 @@ function derive_code_challenge(code_verifier) { return sha256(code_verifier).the
 export default function(id, config) {
     config = { storage: localStorage, ...config }
 
+    let access_token
+    let auth_code
+
     const STORAGE_KEYS = {
-        ACCESS_TOKEN: `${id}_access-token`,
+        ACCESS_TOKEN: `${id}_access-token`, // To phase out
         REFRESH_TOKEN: `${id}_refresh-token`,
-        AUTH_CODE: `${id}_auth-code`,
+        AUTH_CODE: `${id}_auth-code`, // To phase out
         STATE: `${id}_state`,
         CODE_VERIFIER: `${id}_code-verifier`,
     }
 
-    function request_refresh_token() {
-        const refresh_token = config.storage.getItem(STORAGE_KEYS.REFRESH_TOKEN)
+    function update_tokens({access_token, refresh_token}) {
+        return new Promise((resolve, reject) => {
+            if(!access_token || !refresh_token) return reject()
+            config.storage.removeItem(STORAGE_KEYS.STATE)
+            config.storage.removeItem(STORAGE_KEYS.CODE_VERIFIER)
+            config.storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refresh_token)
+            resolve({access_token, refresh_token})
+        })
+    }
+
+    function get_refresh_token() { 
+        return new Promise((resolve, reject) => {
+            const token = config.storage.getItem(STORAGE_KEYS.REFRESH_TOKEN)
+            return token ? resolve(token) : reject()
+        })
+    }
+
+    function fetch_tokens(body_params) {
         const payload = {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
-                grant_type: 'refresh_token',
-                refresh_token,
-                client_id: config.client_id
+                client_id: config.client_id,
+                ...body_params
             })
         }
         return fetch(config.token_endpoint, payload)
-            .then(response => {
-                if(response.status == 200) return response.json()
-            })
-            .then(json => {
-                if(!json) return
-                if(!json.access_token || !json.refresh_token) return
-                config.storage.setItem(STORAGE_KEYS.ACCESS_TOKEN, json.access_token)
-                config.storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, json.refresh_token)
-                return json.access_token
-            })
-        }
+            .then(response => response.status == 200 ? response.json() : Promise.reject('Token request unsuccessful.'))
+            .then(update_tokens)
+    }
 
-    function request_access_token() {
-        const access_token = config.storage.getItem(STORAGE_KEYS.ACCESS_TOKEN)
-        if(access_token) return Promise.resolve(access_token)
-        const refresh_token = config.storage.getItem(STORAGE_KEYS.REFRESH_TOKEN)
-        if(refresh_token) return request_refresh_token()
-        const auth_code = request_auth_code()
-        if(!auth_code) return
-        const payload = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                grant_type: 'authorization_code',
+    function request_tokens_refresh() { 
+        return get_refresh_token().then(refresh_token => fetch_tokens({ grant_type: 'refresh_token', refresh_token }))
+    }
+
+    function request_tokens() {
+        return extract_auth_code_from_url()
+            .then(auth_code => fetch_tokens({
                 code: auth_code,
                 redirect_uri: config.redirect_uri,
                 client_id: config.client_id,
                 code_verifier: config.storage.getItem(STORAGE_KEYS.CODE_VERIFIER)
-            })
-        }
-        return fetch(config.token_endpoint, payload)
-            .then(response => response.json())
-            .then(json => {
-                config.storage.setItem(STORAGE_KEYS.ACCESS_TOKEN, json.access_token)
-                config.storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, json.refresh_token)
-                return access_token
-            })
+            }), request_user_auth)
+            .then(remove_search_params)
     }
 
-    function request_auth_code() {
-        let auth_code = config.storage.getItem(STORAGE_KEYS.AUTH_CODE)
-        if(auth_code) return auth_code
-        const search_params = new URLSearchParams(location.search)
-        auth_code = search_params.get('code')
-        const state = search_params.get('state')
-        const valid_state = config.storage.getItem(STORAGE_KEYS.STATE)
-        if(auth_code && state == valid_state) {
-            config.storage.setItem(STORAGE_KEYS.AUTH_CODE, auth_code)
+    function extract_auth_code_from_url() {
+        return new Promise((resolve, reject) => {
+            const search_params = new URLSearchParams(location.search)
+            auth_code = search_params.get('code')
+            const provided_state = search_params.get('state')
+            const state = config.storage.getItem(STORAGE_KEYS.STATE)
+            if(!provided_state || !state) return reject()
+            if(!auth_code || provided_state !== state) return reject()
             config.storage.removeItem(STORAGE_KEYS.STATE)
-            return location.replace(`${location.origin}${location.pathname}`)
-        }
-        request_user_auth()
+            return resolve(auth_code)
+        })
     }
 
-    async function request_user_auth(params) {
-        const code_verifier = create_code_verifier()
+    function remove_search_params() { location.replace(`${location.origin}${location.pathname}`) }
+
+    async function request_access_token() {
+        if(!access_token) await request_tokens_refresh()
+        if(!access_token) await request_tokens()
+        return new Promise((resolve, reject) => access_token ? resolve(access_token) : reject())
+    }
+
+    async function user_auth_url(params) {
+        code_verifier = create_code_verifier()
         config.storage.setItem(STORAGE_KEYS.CODE_VERIFIER, code_verifier)
         const code_challenge = await derive_code_challenge(code_verifier)
         const state = random_string(32, ALPHANUMERIC)
@@ -113,11 +117,15 @@ export default function(id, config) {
         })
         const url = new URL(config.authorization_endpoint)
         url.search = search_params.toString()
-        location.replace(url)
+        return url
     }
 
+    function request_user_auth(params) { location.replace(user_auth_url(params)) }
+
     function invalidate_access_token() {
+        access_token = undefined
         config.storage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
+        config.storage.removeItem(STORAGE_KEYS.AUTH_CODE)
     }
 
     return { request_access_token, invalidate_access_token }

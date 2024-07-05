@@ -64,10 +64,12 @@ export default function(id, config) {
     }
 
     function request_tokens_refresh() { 
+        console.log('request_tokens_refresh')
         return get_refresh_token().then(refresh_token => fetch_tokens({ grant_type: 'refresh_token', refresh_token }))
     }
 
     function request_tokens() {
+        console.log('request_tokens')
         return extract_auth_code_from_url()
             .then(auth_code => fetch_tokens({
                 code: auth_code,
@@ -94,6 +96,8 @@ export default function(id, config) {
     function remove_search_params() { location.replace(`${location.origin}${location.pathname}`) }
 
     async function request_access_token() {
+        console.log('request_access_token')
+        invalidate_access_token()
         if(!access_token) await request_tokens_refresh()
         if(!access_token) await request_tokens()
         return new Promise((resolve, reject) => access_token ? resolve(access_token) : reject())

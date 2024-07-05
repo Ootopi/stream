@@ -33,14 +33,13 @@ export default function(id, config) {
     }
 
     function update_tokens(json) {
-        console.log('update tokens')
         return new Promise((resolve, reject) => {
             if(!json.access_token || !json.refresh_token) return reject()
             access_token = json.access_token
             config.storage.removeItem(STORAGE_KEYS.STATE)
             config.storage.removeItem(STORAGE_KEYS.CODE_VERIFIER)
             config.storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, json.refresh_token)
-            resolve({access_token, refresh_token: json.refresh_token})
+            return resolve({access_token, refresh_token: json.refresh_token})
         })
     }
 
@@ -65,8 +64,7 @@ export default function(id, config) {
             .then(update_tokens)
     }
 
-    function request_tokens_refresh() { 
-        console.log('request_tokens_refresh')
+    function request_tokens_refresh() {
         return get_refresh_token()
             .then(
                 refresh_token => fetch_tokens({ grant_type: 'refresh_token', refresh_token }),
@@ -75,15 +73,14 @@ export default function(id, config) {
     }
 
     function request_tokens() {
-        console.log('request_tokens')
         return extract_auth_code_from_url()
             .then(auth_code => fetch_tokens({
+                grant_type: 'authorization_code',
                 code: auth_code,
                 redirect_uri: config.redirect_uri,
                 client_id: config.client_id,
                 code_verifier: config.storage.getItem(STORAGE_KEYS.CODE_VERIFIER)
-            }), request_user_auth)
-            // .then(remove_search_params)
+            }).then(remove_search_params), request_user_auth)
     }
 
     function extract_auth_code_from_url() {
@@ -102,7 +99,6 @@ export default function(id, config) {
     function remove_search_params() { location.replace(`${location.origin}${location.pathname}`) }
 
     async function request_access_token() {
-        console.log('request_access_token', access_token)
         invalidate_access_token()
         if(!access_token) await request_tokens_refresh()
         if(!access_token) await request_tokens()

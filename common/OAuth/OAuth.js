@@ -130,9 +130,9 @@ export default function(id, config) {
         return url
     }
 
-    function request_user_auth(params) {
+    async function request_user_auth(params) {
         console.log('request_user_auth', user_auth_url(params))
-        location.replace(user_auth_url(params))
+        location.replace(await user_auth_url(params))
     }
 
     function invalidate_access_token() {

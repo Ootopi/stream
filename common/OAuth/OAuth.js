@@ -67,7 +67,11 @@ export default function(id, config) {
 
     function request_tokens_refresh() { 
         console.log('request_tokens_refresh')
-        return get_refresh_token().then(refresh_token => fetch_tokens({ grant_type: 'refresh_token', refresh_token }))
+        return get_refresh_token()
+            .then(
+                refresh_token => fetch_tokens({ grant_type: 'refresh_token', refresh_token }),
+                () => console.log('no refresh token') 
+            )
     }
 
     function request_tokens() {
@@ -126,7 +130,10 @@ export default function(id, config) {
         return url
     }
 
-    function request_user_auth(params) { location.replace(user_auth_url(params)) }
+    function request_user_auth(params) {
+        console.log('request_user_auth')
+        location.replace(user_auth_url(params))
+    }
 
     function invalidate_access_token() {
         access_token = undefined

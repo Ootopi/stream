@@ -83,7 +83,7 @@ export default function(id, config) {
                 client_id: config.client_id,
                 code_verifier: config.storage.getItem(STORAGE_KEYS.CODE_VERIFIER)
             }), request_user_auth)
-            .then(remove_search_params)
+            // .then(remove_search_params)
     }
 
     function extract_auth_code_from_url() {

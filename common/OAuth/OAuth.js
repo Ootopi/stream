@@ -110,7 +110,7 @@ export default function(id, config) {
     }
 
     async function user_auth_url(params) {
-        code_verifier = create_code_verifier()
+        const code_verifier = create_code_verifier()
         config.storage.setItem(STORAGE_KEYS.CODE_VERIFIER, code_verifier)
         const code_challenge = await derive_code_challenge(code_verifier)
         const state = random_string(32, ALPHANUMERIC)

@@ -33,6 +33,7 @@ export default function(id, config) {
     }
 
     function update_tokens(json) {
+        console.log('update tokens')
         return new Promise((resolve, reject) => {
             if(!json.access_token || !json.refresh_token) return reject()
             access_token = json.access_token

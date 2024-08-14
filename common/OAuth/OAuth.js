@@ -23,6 +23,7 @@ export default function(id, config) {
 
     let access_token
     let auth_code
+    let requesting_user_auth = false
 
     const STORAGE_KEYS = {
         ACCESS_TOKEN: `${id}_access-token`, // To phase out
@@ -66,13 +67,10 @@ export default function(id, config) {
 
     function request_tokens_refresh() {
         return get_refresh_token()
-            .then(
-                refresh_token => fetch_tokens({ grant_type: 'refresh_token', refresh_token }),
-                () => console.log('no refresh token') 
-            )
+            .then(refresh_token => fetch_tokens({ grant_type: 'refresh_token', refresh_token }))
     }
 
-    function request_tokens() {
+    function request_tokens(params) {
         return extract_auth_code_from_url()
             .then(auth_code => fetch_tokens({
                 grant_type: 'authorization_code',
@@ -80,7 +78,20 @@ export default function(id, config) {
                 redirect_uri: config.redirect_uri,
                 client_id: config.client_id,
                 code_verifier: config.storage.getItem(STORAGE_KEYS.CODE_VERIFIER)
-            }).then(remove_search_params), request_user_auth)
+            }).then(remove_search_params), () => request_user_auth(params))
+    }
+
+    function extract_access_token_from_url() {
+        return new Promise((resolve, reject) => {
+            const search_params = new URLSearchParams(location.hash.substring(1))
+            access_token = search_params.get('access_token')
+            const provided_state = search_params.get('state')
+            const state = config.storage.getItem(STORAGE_KEYS.STATE)
+            if(!provided_state || !state) return reject()
+            if(!access_token || provided_state !== state) return reject()
+            config.storage.removeItem(STORAGE_KEYS.STATE)
+            return resolve(access_token)
+        })
     }
 
     function extract_auth_code_from_url() {
@@ -98,9 +109,10 @@ export default function(id, config) {
 
     function remove_search_params() { location.replace(`${location.origin}${location.pathname}`) }
 
-    async function request_access_token() {
+    async function request_access_token(params) {
         if(!access_token) await request_tokens_refresh()
-        if(!access_token) await request_tokens()
+            .catch(extract_access_token_from_url)
+            .catch(() => request_tokens(params))
         return new Promise((resolve, reject) => access_token ? resolve(access_token) : reject())
     }
 
@@ -126,6 +138,8 @@ export default function(id, config) {
     }
 
     async function request_user_auth(params) {
+        if(requesting_user_auth) return
+        request_user_auth = true
         location.replace(await user_auth_url(params))
     }
 
@@ -137,3 +151,4 @@ export default function(id, config) {
 
     return { request_access_token, invalidate_access_token }
 }
+

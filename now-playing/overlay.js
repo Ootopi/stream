@@ -8,7 +8,6 @@ const SPOTIFY_AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
 
 const search_params = new URLSearchParams(location.search)
 const reset = search_params.get('reset')
-if(reset) localStorage.clear()
 
 const align = search_params.get('align')
 if(align) document.querySelector('.theme_align').setAttribute('href', `theme_align-${align}.css`)

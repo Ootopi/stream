@@ -2,9 +2,7 @@ import api from './api.js'
 import dom from './ui.js'
 
 const params = new URLSearchParams(window.location.search)
-// const campaign_id = 410155
-// const campaign_id = 417350
-const campaign_id = params.get('campaign') // 420187
+const campaign_id = params.get('campaign')
 const donors_per_request = 20
 const polling_rate = 1000
 

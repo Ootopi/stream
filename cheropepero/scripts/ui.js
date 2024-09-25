@@ -55,7 +55,7 @@ donation_alert.appendChild(donation_alert_message)
 
 function show_alert(donation, on_alert_end, tts_enabled, tts_voice, tts_volume) {
 
-    const possible_images = ['panda', 'gasp', 'jam', 'bunny', 'hearts', 'clap', 'uwu', 'blankies', 'thankegg']
+    const possible_images = [ 'clap', 'uwu', 'blankies', 'thankegg'] // 'panda', 'gasp', 'jam', 'bunny', 'hearts',
     const random_image = Math.floor(Math.random() * possible_images.length)
     possible_images.forEach((x, i) => donation_alert_image.classList.toggle(x, i == random_image))
 

@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+:root {
+    --border-color: #FFF;
+    --outline-color: #EB8400;
+    --background-color: #F2DDBD;
+    --font-color: #5E3300;
+}
+
+html, body, .overlay {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 10px;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.donation-bar,
+.donation-bar::after,
+.donation-bar .progress {
+    position: relative;
+    box-sizing: border-box;
+    width: 40%;
+    height: 80px;
+    border-radius: 50vh;
+    margin: 3% auto;
+    background-color: var(--background-color);
+}
+
+.donation-bar {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.donation-bar::after {
+    position: absolute;
+    content: '';
+    display: block;
+    width: 100%;
+    margin: 0;
+    background-color: transparent;
+    box-shadow: 
+        inset 0 0 0 5px var(--outline-color), 
+        inset 0 0 0 10px var(--border-color);
+    top: 0;
+}
+
+.donation-bar .status,
+.donation-bar .goal {
+    position: absolute;
+    width: 100%;
+    background-color: transparent;
+    color: var(--font-color);
+}
+
+.donation-bar .status {
+    text-align: center;
+    font-weight: bold;
+    font-size: 2.2rem;
+    top: 1.6rem;
+}
+
+.donation-bar .goal {
+    text-align: center;
+    font-size: 1.4rem;
+    margin-right: 25px;
+    bottom: 1.4rem;
+}
+
+.donation-bar .progress {
+    position: absolute;
+    display: block;
+    border-radius: 0;
+    margin: 0;
+    width: 0;
+    align-self: flex-start;
+    box-sizing: border-box;
+    transition: width 0.5s ease-out;
+    background-image: linear-gradient(267deg, rgb(236, 112, 112), rgb(239, 169, 109));
+    text-align: center;
+    color: white;
+}
+
+.donation-list {
+    position: absolute;
+    display: block;
+    right: 0;
+    height: 30%;
+    overflow-y: scroll;
+    background-color: transparent;
+    scrollbar-color: transparent;
+    padding: 20px;
+    font-size: 1.5rem;
+    bottom: 0;
+}
+
+.donation-list .donation {
+    position: relative;
+    margin-bottom: 1em;
+    user-select: none;
+    display: flex;
+    animation: slide ease .5s forwards 1.2s;
+    opacity: 0;
+}
+
+ .donation-list .donation-amount {
+    display: inline-block;
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #EEE;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.donation-list .donor-name {
+    display: inline-block;
+    font-weight: bold;
+    color: #FFF;
+    text-shadow: 1px 1px #000;
+    padding-right: 10px;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.donation-list .donation-time-since {
+    color: #AAA;
+    margin-left: 0.5rem;
+    text-align: right;
+    flex-grow: 1;
+}
+
+@keyframes slide {
+    0% {transform: translateX(-300px);}
+    100% {transform: translateX(0px);opacity:1;}
+ }
+
+ .donation-alert .image {
+    display: block;
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-bottom: 1rem;
+    border-radius: 3rem;
+}
+
+.donation-alert .image.panda {
+    background-image: url('../media/panda_clap.gif');
+}
+
+.donation-alert .image.gasp {
+    background-image: url('../media/chero-gasp.gif');
+}
+
+.donation-alert .image.jam {
+    background-image: url('../media/panda_jam.gif');
+}
+
+.donation-alert .image.hearts {
+    background-image: url('../media/chero-fingerhearts.gif');
+}
+
+.donation-alert .image.bunny {
+    background-image: url('../media/bunny.webp');
+}
+
+.donation-alert .image.uwu {
+    background-image: url('../media/uwu.gif');
+}
+.donation-alert .image.clap {
+    background-image: url('../media/clap.gif');
+}
+.donation-alert .image.blankies {
+    background-image: url('../media/blankies.gif');
+}
+.donation-alert .image.thankegg {
+    background-image: url('../media/thankegg.gif');
+}
+
+.donation-alert {
+    display: block;
+    width: fit-content;
+    padding: 2rem;
+    text-align: center;
+    font-size: 1.5em;
+    text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black,0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black,0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black,0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black;
+    font-weight: bold;
+    color: #FFF;
+    border-radius: 0.5rem;
+    align-self: center;
+    flex-grow: 1;
+    background-repeat: no-repeat;
+    background-position-x: 5%;
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 50%;
+    user-select: none;
+}
+
+.donation-alert .name {
+    color: #cd88fb;
+    font-size: 2.2em;
+}
+
+.donation-alert .amount {
+    color: #cd88fb;
+    font-size: 2.2em;
+}
+
+.donation-alert .message {
+    display: block;
+    margin: 1rem 2rem 0;
+    font-size: 1.6em;
+    font-weight: normal;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.donation.skipped {
+    display: none;
+}
+
+.pulse {
+    animation: appear 5s linear;
+}
+
+.reset {
+    transform: scale(0);
+    opacity: 0;
+}
+
+@keyframes appear {
+    0% { transform: scale(0); opacity: 0;}
+    3% { transform: scale(1.2); opacity: 1; }
+    5% { transform: scale(1); }
+    95% { opacity: 1; }
+    100% { opacity: 0; }
+}

@@ -29,6 +29,7 @@ function update() {
 }
 
 function on_funded_change(campaign, changes, first_load) {
+    console.log(campaign)
     console.info(`[${(new Date()).toLocaleString('en-GB')}] ${campaign.percentage.toFixed(0)}%: ${campaign.funded.currency_symbol}${campaign.funded.amount} of ${campaign.target.currency_symbol}${campaign.target.amount} raised by ${campaign.total_donors} donors`)
     console.info(`[${(new Date()).toLocaleString('en-GB')}] ${changes} new donors`)
     const pages = Math.ceil(changes / donors_per_request)
@@ -73,6 +74,22 @@ function skip() {
         trigger()
     }, 1000)
 }
+
+setInterval(() => {
+    api.fetch_google_info()
+        .then(donations => {
+            let amount = 0
+            let target = 0
+            donations.forEach(x => {
+                amount += x.Amount??0
+                target += x.target??0
+            })
+            let percentage = amount / target * 100
+            const campaign = {"funded":{'amount': amount,"currency_symbol":"S$"},"target":{"amount": target,"currency_symbol":"S$"}, percentage}
+            console.log(campaign)
+            dom.update_manual_donations(campaign)
+        })
+}, 1000)
 
 function trigger() {
     if(triggering || trigger_queue.length == 0) return

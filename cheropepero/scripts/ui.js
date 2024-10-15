@@ -4,6 +4,23 @@ const overlay = dom.div()
 overlay.classList.toggle('overlay')
 document.body.appendChild(overlay)
 
+const donation_bar_manual = dom.div()
+donation_bar_manual.classList.toggle('donation-bar')
+donation_bar_manual.id = 'donation-bar'
+overlay.append(donation_bar_manual)
+
+const donation_progress_manual = dom.div()
+donation_progress_manual.classList.toggle('progress')
+donation_bar_manual.append(donation_progress_manual)
+
+const donation_status_manual = dom.div()
+donation_status_manual.classList.toggle('status')
+donation_bar_manual.append(donation_status_manual)
+
+const donation_goal_manual = dom.div()
+donation_goal_manual.classList.toggle('goal')
+donation_bar_manual.append(donation_goal_manual)
+
 const donation_bar = dom.div()
 donation_bar.classList.toggle('donation-bar')
 donation_bar.id = 'donation-bar'
@@ -123,4 +140,11 @@ function update_donations() {
     })
 }
 
-export default { donation_progress, donation_status, donation_goal, donation_alert, update_donations, add_donation, show_alert }
+function update_manual_donations(campaign) {
+    console.log(campaign)
+    donation_progress_manual.style.width = `${Math.min(100, campaign.percentage.toFixed(0))}%`
+    donation_status_manual.textContent = `${campaign.funded.currency_symbol}${campaign.funded.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${campaign.percentage.toFixed(0)}%)`
+    donation_goal_manual.innerHTML = `of <b>${campaign.target.currency_symbol}${campaign.target.amount.toLocaleString()}</b> raised`
+}
+
+export default { donation_progress, donation_status, donation_goal, donation_alert, update_donations, add_donation, show_alert, update_manual_donations }

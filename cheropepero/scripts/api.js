@@ -51,4 +51,11 @@ function fetch_campaign_info(campaign_id) {
         )
 }
 
-export default { fetch_campaign_info, fetch_donations }
+function fetch_google_info() {
+    // const url = 'https://script.google.com/macros/s/AKfycbwRPKgC4Suatc2DXjzcPTYUK7BLUm_dY5izfLmDuP7KfLk05iBdQcbiy1YHdGc0H8L9/exec?path=donations'
+    const url = 'https://script.google.com/macros/s/AKfycbzw1kvRAt1GbnLYxC_Lf_WhnDoOC6H8loon3zPdxOR7PuMX8WAV-pPlWcHadZ10F36mPg/exec?path=DonationLog'
+    
+    return fetch(url).then(e => e.json())
+}
+
+export default { fetch_campaign_info, fetch_donations, fetch_google_info }

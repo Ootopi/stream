@@ -39,9 +39,10 @@ body {
 
 .donation-bar {
     overflow: hidden;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     user-select: none;
+    margin: 3% 5%;
 }
 
 .donation-bar::after {

@@ -92,8 +92,6 @@ function update_manual_bar() {
         })
 }
 
-update_manual_bar().then(() => setTimeout(update_manual_bar, 1000))
-
 function trigger() {
     if(triggering || trigger_queue.length == 0) return
     triggering = true
@@ -162,4 +160,7 @@ window.addEventListener('click', () => {
     audio_context.resume()
     window.speechSynthesis.resume()
     update()
+    
+    update_manual_bar().then(() => setTimeout(update_manual_bar, 1000))
+
 })

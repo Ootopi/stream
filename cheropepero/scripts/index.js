@@ -81,8 +81,9 @@ setInterval(() => {
             let amount = 0
             let target = 0
             donations.forEach(x => {
-                amount += x.Amount??0
-                target += x.target??0
+                console.log(amount)
+                if(x.Amount) amount += x.Amount
+                if(x.target) target += x.target
             })
             let percentage = amount / target * 100
             const campaign = {"funded":{'amount': amount,"currency_symbol":"S$"},"target":{"amount": target,"currency_symbol":"S$"}, percentage}

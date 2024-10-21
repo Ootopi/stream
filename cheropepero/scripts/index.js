@@ -75,8 +75,8 @@ function skip() {
     }, 1000)
 }
 
-setInterval(() => {
-    api.fetch_google_info()
+function update_manual_bar() {
+    return api.fetch_google_info()
         .then(donations => {
             let amount = 0
             let target = 0
@@ -90,7 +90,9 @@ setInterval(() => {
             console.log(campaign)
             dom.update_manual_donations(campaign)
         })
-}, 1000)
+}
+
+update_manual_bar().then(() => setTimeout(update_manual_bar, 1000))
 
 function trigger() {
     if(triggering || trigger_queue.length == 0) return

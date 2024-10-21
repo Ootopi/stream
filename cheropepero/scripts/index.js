@@ -89,7 +89,7 @@ function update_manual_bar() {
             const campaign = {"funded":{'amount': amount,"currency_symbol":"S$"},"target":{"amount": target,"currency_symbol":"S$"}, percentage}
             console.log(campaign)
             dom.update_manual_donations(campaign)
-        })
+        }).then(() => setTimeout(update_manual_bar, 1000))
 }
 
 function trigger() {
@@ -161,6 +161,6 @@ window.addEventListener('click', () => {
     window.speechSynthesis.resume()
     update()
     
-    update_manual_bar().then(() => setTimeout(update_manual_bar, 1000))
+    update_manual_bar()
 
 })
